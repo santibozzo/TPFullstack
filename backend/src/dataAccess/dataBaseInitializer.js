@@ -1,3 +1,4 @@
+const INIT_USERS = 50;
 
 const usersModel = require('../models/usersModel');
 const mongoose = require('mongoose');
@@ -11,5 +12,13 @@ exports.initializeDataBase = () => {
 
 function populateUsers() {
 	console.log('Populating users collection...');
-	usersModel.createUser('santibozzo', 24);
+	for(let i = 0; i < INIT_USERS; i++) {
+		usersModel.createUser({
+			dni: 50000000 + i,
+			email: `${50000000 + i}@tpfullstack.com`,
+			password: '123456',
+			creditScore: Math.floor(Math.random() * 5) + 1
+		}, false);
+	}
+	console.log(`${INIT_USERS} users created`);
 }
