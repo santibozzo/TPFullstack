@@ -4,9 +4,7 @@ const usersModel = require('../models/usersModel');
 exports.createUser = (req, res) => {
 	usersModel.createUser(req.body)
 		.then(response => {
-			const user = response.toObject();
-			obfuscateUser(user);
-			res.status(201).send(user);
+			res.status(201).send(response);
 		})
 		.catch(error => {
 			console.error(error.message);
@@ -22,10 +20,8 @@ exports.createUser = (req, res) => {
 
 exports.getUser = (req, res) => {
 	usersModel.getUser(req.params.dni)
-		.then(response => {
-			const user = response.toObject();
-			obfuscateUser(user);
-			res.status(200).send(user);
+		.then(user => {
+			res.status(200).send(user.toObject());
 		})
 		.catch(error => {
 			console.error(error.message);
@@ -39,8 +35,32 @@ exports.getUser = (req, res) => {
 		});
 };
 
-function obfuscateUser(user) {
-	delete user._id;
-	delete user.__v;
-	delete user.password;
+exports.getUsersList = (req, res) => {
+	const dniList = [];
+	for(let user of req.body) {
+		if(hasValidDni(user)) {
+			dniList.push(user.dni);
+		}else if(hasValidCuit(user)) {
+			dniList.push(parseInt(user.cuit.split('-')[1], 10));
+		}else {
+			res.status(400).send('Invalid user structure');
+			return;
+		}
+	}
+	usersModel.getUsersList(dniList)
+		.then(users => res.status(200).send(users))
+		.catch(error => {
+			console.error(error);
+			res.sendStatus(500);
+		});
+};
+
+function hasValidDni(user) {
+	return user.dni && Number.isInteger(user.dni);
+}
+
+function hasValidCuit(user) {
+	return user.cuit &&
+		user.cuit.toString().split('-').length === 3 &&
+		Number.isInteger(parseInt(user.cuit.split('-')[1], 10));
 }
