@@ -9,7 +9,7 @@ const userSchema = new Schema({
 });
 const user = mongoose.model('users', userSchema);
 const userCreditScoreProj = {_id: false, __v: false, email: false, password: false};
-const userInfoProj = {_id: false, __v: false, password: false};
+const userInfoProj = {_id: false, __v: false};
 
 exports.createUser = (userInfo, log = true) => {
 	return new Promise((resolve, reject) => createUser(userInfo, log, resolve, reject));

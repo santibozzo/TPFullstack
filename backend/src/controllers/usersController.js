@@ -21,7 +21,9 @@ exports.createUser = (req, res) => {
 exports.getUser = (req, res) => {
 	usersModel.getUser(req.params.dni)
 		.then(user => {
-			res.status(200).send(user.toObject());
+			const userInfo = user.toObject();
+			delete userInfo.password;
+			res.status(200).send(userInfo);
 		})
 		.catch(error => {
 			console.error(error.message);
