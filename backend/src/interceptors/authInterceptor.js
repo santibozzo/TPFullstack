@@ -26,14 +26,10 @@ exports.validateToken = (req, res, next) => {
 function checkRequestLimit(dni, res, next) {
 	requestLimitsModel.getRequestLimit(dni)
 		.then(requesLimit => {
-			if(moment().isAfter(moment(requesLimit.lastRefresh, 'DD/MM-HH:mm').add(1, 'days'))) {
-				requestLimitsModel.updateRequestLimit(dni, {uses: 0, lastRefresh: moment().format('DD/MM-HH:mm')});
-				res.locals.dni = dni.toString();
-				next();
+			if(moment().isAfter(moment(requesLimit.lastRefresh, 'DD/MM-HH:mm').add(1, 'hours'))) {
+				updateRequestLimit(dni, res, next, {uses: 0, lastRefresh: moment().format('DD/MM-HH:mm')});
 			}else if(requesLimit.uses < requesLimit.limit) {
-				requestLimitsModel.updateRequestLimit(dni, {uses: requesLimit.uses + 1});
-				res.locals.dni = dni.toString();
-				next();
+				updateRequestLimit(dni, res, next, {uses: requesLimit.uses + 1});
 			}else {
 				res.status(401).send('Requests limit reached');
 			}
@@ -47,5 +43,17 @@ function checkRequestLimit(dni, res, next) {
 			}else {
 				res.sendStatus(500);
 			}
+		});
+}
+
+function updateRequestLimit(dni, res, next, newValues) {
+	requestLimitsModel.updateRequestLimit(dni, newValues)
+		.then(() => {
+			res.locals.dni = dni.toString();
+			next();
+		})
+		.catch(error => {
+			console.error(error.message);
+			res.sendStatus(500);
 		});
 }
