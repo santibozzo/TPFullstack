@@ -1,5 +1,7 @@
-const INIT_USERS = 50;
 
+const config = require('../resources/config');
+const initAmmount = config.DBInitializer.initUsersAmmount;
+const firstDni = config.DBInitializer.firstDNI;
 const usersModel = require('../models/usersModel');
 const mongoose = require('mongoose');
 const connection = mongoose.connection;
@@ -12,13 +14,13 @@ exports.initializeDataBase = () => {
 
 function populateUsers() {
 	console.log('Populating users collection...');
-	for(let i = 0; i < INIT_USERS; i++) {
+	for(let i = 0; i < initAmmount; i++) {
 		usersModel.createUser({
-			dni: 50000000 + i,
-			email: `${50000000 + i}@tpfullstack.com`,
+			dni: firstDni + i,
+			email: `${firstDni + i}@tpfullstack.com`,
 			password: '123456',
 			creditScore: Math.floor(Math.random() * 5) + 1
 		}, false);
 	}
-	console.log(`${INIT_USERS} users created`);
+	console.log(`${initAmmount} users created`);
 }

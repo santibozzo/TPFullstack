@@ -1,5 +1,5 @@
-const SECRET = 'secretKey';
 
+const config = require('../resources/config');
 const requestLimitsModel = require('../models/requestLimitsModel');
 const moment = require('moment');
 const jwt = require('jsonwebtoken');
@@ -10,7 +10,7 @@ exports.validateToken = (req, res, next) => {
 		token = token.splice(7, token);
 	}
 	if(token) {
-		jwt.verify(token, SECRET, (err, decoded) => {
+		jwt.verify(token, config.tokenSecretKey, (err, decoded) => {
 			if(decoded) {
 				const dni = decoded.dni;
 				checkRequestLimit(dni, res, next);

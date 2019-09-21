@@ -1,6 +1,8 @@
-const PORT = 3001;
 const BASE_PATH = '/api';
 
+const config = require('./src/resources/config');
+const server = config.server;
+const dataBase = config.dataBase;
 const loginRouter = require('./src/routers/loginRouter');
 const usersRouter = require('./src/routers/usersRouter');
 const requestLimitsRouter = require('./src/routers/requestLimitsRouter');
@@ -14,7 +16,7 @@ app.use(`${BASE_PATH}/login`, loginRouter);
 app.use(`${BASE_PATH}/users`, usersRouter);
 app.use(`${BASE_PATH}/request-limits`, requestLimitsRouter);
 
-app.listen(PORT, () => console.log(`Server started... listening on port ${PORT}`));
+app.listen(server.port, () => console.log(`Server started... listening on port ${server.port}`));
 
 
 const connectionOptions = {
@@ -23,7 +25,7 @@ const connectionOptions = {
 	useCreateIndex: true
 };
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/tpFullstack', connectionOptions)
+mongoose.connect(`mongodb://${dataBase.host}:${dataBase.port}/${dataBase.name}`, connectionOptions)
 	.then(() => {
 		console.log('Connected to DB');
 		dataBaseInitializer.initializeDataBase();
