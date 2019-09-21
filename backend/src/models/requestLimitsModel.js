@@ -9,6 +9,7 @@ const requestLimitSchema = new Schema({
 	lastRefresh: {type: String, required: true, default: moment().format('DD/MM-HH:mm')}
 });
 const requestLimit = mongoose.model('requestLimits', requestLimitSchema);
+const requestLimitProj = {_id: false, __v: false};
 
 exports.createRequestLimit = dni => {
 	return new Promise((resolve, reject) => createRequestLimit(dni, resolve, reject));
@@ -31,7 +32,7 @@ function createRequestLimit(dni, resolve, reject) {
 }
 
 function getRequestLimit(dni, resolve, reject) {
-	requestLimit.find({dni})
+	requestLimit.find({dni}, requestLimitProj)
 		.then(result => {
 			if(result.length === 0) {
 				reject && reject(new Error('documentNotFound'));
