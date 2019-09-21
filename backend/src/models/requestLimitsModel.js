@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const requestLimitSchema = new Schema({
 	dni: {type: Number, unique: true, required: true, validate: dni => dni.toString().length === 8},
-	limit: {type: Number, required: true, default: 10},
+	limit: {type: Number, required: true, default: 10, min: 1},
 	uses: {type: Number, required: true, default: 0},
 	lastRefresh: {type: String, required: true, default: moment().format('DD/MM-HH:mm')}
 });
