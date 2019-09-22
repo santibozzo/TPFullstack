@@ -78,7 +78,7 @@ $ node server.js
 
 Es un cliente que te deja documentar y probar APIs rest (como postman). En caso de 
 usarlo se puede importar la API entera del proyecto lista para probar con el archivo 
-que se encuentra en [src/resources/tpFullStackAPI-v0.1.0.json](https://github.com/santibozzo/TPFullstack/blob/develop/backend/src/resources/tpFullStackAPI-v0.1.0.json.json)
+que se encuentra en [src/resources/tpFullStackAPI-v0.1.0.json](https://github.com/santibozzo/TPFullstack/blob/master/backend/src/resources/tpFullStackAPI-v0.1.0.json).
 
 - [Reslet Client (sitio)](https://restlet.com/modules/client/)
 - [Reslet Client (extensión chrome)](https://chrome.google.com/webstore/detail/restlet-client-rest-api-t/aejoelaoggembcahagimdiliamlcdmfm)
@@ -157,7 +157,7 @@ Devuelve la información de un usuario.
 
 ### /users/get
 
-Recive una lista de dni/cuit y devuelve una lista de los usuarios relacionados a 
+Recibe una lista de dni/cuit y devuelve una lista de los usuarios relacionados a 
 esos dni/cuit. Si algún dni/cuit no se encuentra en la base se lo saltea.
 - **Autenticado:** SI
 - **Método:** POST
