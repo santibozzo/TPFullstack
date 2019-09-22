@@ -1,0 +1,15 @@
+{
+	"server": {
+		"port": "3001"
+	},
+	"dataBase": {
+		"host": "localhost",
+		"port": "27017",
+		"name": "tpFullstack"
+	},
+	"tokenSecretKey": "secretKey",
+	"DBInitializer": {
+		"initUsersAmmount": 50,
+		"firstDNI": 50000000
+	}
+}
