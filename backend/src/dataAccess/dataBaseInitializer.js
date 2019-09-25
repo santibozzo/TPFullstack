@@ -16,6 +16,8 @@ function initializeDataBase(resolve, reject) {
 		.then(count => {
 			if(count === 0) {
 				populateUsers(resolve, reject);
+			}else {
+				resolve && resolve('DB already populated');
 			}
 		})
 		.catch(error => {
