@@ -1,4 +1,5 @@
 
+const async = require('async');
 const config = require('../resources/config');
 const initAmmount = config.DBInitializer.initUsersAmmount;
 const firstDni = config.DBInitializer.firstDNI;
@@ -7,20 +8,44 @@ const mongoose = require('mongoose');
 const connection = mongoose.connection;
 
 exports.initializeDataBase = () => {
-	connection.db.collection('users').countDocuments()
-		.then(count => count === 0 && populateUsers())
-		.catch(error => console.error(error));
+	return new Promise((resolve, reject) => initializeDataBase(resolve, reject));
 };
 
-function populateUsers() {
+function initializeDataBase(resolve, reject) {
+	connection.db.collection('users').countDocuments()
+		.then(count => {
+			if(count === 0) {
+				populateUsers(resolve, reject);
+			}
+		})
+		.catch(error => {
+			console.error(error);
+			reject && reject(error);
+		});
+}
+
+function populateUsers(resolve, reject) {
 	console.log('Populating users collection...');
+	const tasks = [];
 	for(let i = 0; i < initAmmount; i++) {
-		usersModel.createUser({
-			dni: firstDni + i,
-			email: `${firstDni + i}@tpfullstack.com`,
-			password: '123456',
-			creditScore: Math.floor(Math.random() * 5) + 1
-		}, false);
+		tasks.push((callback) => {
+			usersModel.createUser({
+				dni: firstDni + i,
+				email: `${firstDni + i}@tpfullstack.com`,
+				password: '123456',
+				creditScore: Math.floor(Math.random() * 5) + 1
+			}, false)
+				.then(result => callback(null, result))
+				.catch(error => callback(error.message));
+		});
 	}
-	console.log(`${initAmmount} users created`);
+	async.parallel(tasks)
+		.then(results => {
+			console.log(`${results.length} users created`);
+			resolve && resolve(results);
+		})
+		.catch(error => {
+			console.error(error);
+			reject && reject(error);
+		});
 }
