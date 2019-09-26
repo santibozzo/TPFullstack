@@ -35,7 +35,6 @@ function checkRequestLimit(dni, res, next) {
 			}
 		})
 		.catch(error => {
-			console.error(error.message);
 			if(error.message === 'documentNotFound') {
 				requestLimitsModel.createRequestLimit(dni)
 					.then(response => checkRequestLimit(dni, res, next))
@@ -53,7 +52,6 @@ function updateRequestLimit(dni, res, next, newValues) {
 			next();
 		})
 		.catch(error => {
-			console.error(error.message);
 			res.sendStatus(500);
 		});
 }
