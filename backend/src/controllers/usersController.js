@@ -61,7 +61,15 @@ function hasValidDni(user) {
 }
 
 function hasValidCuit(user) {
-	return user.cuit &&
-		user.cuit.toString().split('-').length === 3 &&
-		Number.isInteger(parseInt(user.cuit.split('-')[1], 10));
+	if(user.cuit) {
+		const parts = user.cuit.toString().split('-');
+		return (
+			parts.length === 3 &&
+			parts[0].length === 2 &&
+			parts[1].length === 8 &&
+			parts[2].length === 1 &&
+			Number.isInteger(parseInt(parts[1], 10))
+		);
+	}
+	return false;
 }
