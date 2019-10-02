@@ -9,6 +9,6 @@
 	},
 	"tokenSecretKey": "secretKey",
 	"DBInitializer": {
-		"initUsersAmmount": 50
+		"initUsersAmmount": 5000
 	}
 }

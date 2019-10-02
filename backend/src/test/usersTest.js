@@ -21,6 +21,136 @@ describe('Users tests', () => {
 			.catch(error => done(error));
 	});
 
+	describe('POST:users', () => {
+		it('creates non-existing user', () => {
+			return request(app)
+				.post('/api/users')
+				.send({
+					dni: 40000000,
+					email: '40000000@tpFullstack.com',
+					password: '123456',
+					creditScore: 5
+				})
+				.expect(201);
+		});
+
+		it('creates existing user', () => {
+			return request(app)
+				.post('/api/users')
+				.send({
+					dni: 50000000,
+					email: '50000000@tpFullstack.com',
+					password: '123456',
+					creditScore: 5
+				})
+				.expect(400);
+		});
+
+		it('string dni', () => {
+			return request(app)
+				.post('/api/users')
+				.send({
+					dni: '40000001',
+					email: '40000001@tpFullstack.com',
+					password: '123456',
+					creditScore: 5
+				})
+				.expect(201);
+		});
+
+		it('invalid dni', () => {
+			return request(app)
+				.post('/api/users')
+				.send({
+					dni: 30,
+					email: '50000000@tpFullstack.com',
+					password: '123456',
+					creditScore: 5
+				})
+				.expect(400);
+		});
+
+		it('negative dni', () => {
+			return request(app)
+				.post('/api/users')
+				.send({
+					dni: -30000000,
+					email: '30000000@tpFullstack.com',
+					password: '123456',
+					creditScore: 5
+				})
+				.expect(400);
+		});
+
+		it('number password', () => {
+			return request(app)
+				.post('/api/users')
+				.send({
+					dni: 40000002,
+					email: '40000002@tpFullstack.com',
+					password: 123456,
+					creditScore: 5
+				})
+				.expect(201);
+		});
+
+		it('credit score higher than 5', () => {
+			return request(app)
+				.post('/api/users')
+				.send({
+					dni: '30000000',
+					email: '50000000@tpFullstack.com',
+					password: '123456',
+					creditScore: 8
+				})
+				.expect(400);
+		});
+
+		it('missing dni field', () => {
+			return request(app)
+				.post('/api/users')
+				.send({
+					email: '50000000@tpFullstack.com',
+					password: '123456',
+					creditScore: 8
+				})
+				.expect(400);
+		});
+
+		it('missing email field', () => {
+			return request(app)
+				.post('/api/users')
+				.send({
+					dni: '30000000',
+					password: '123456',
+					creditScore: 8
+				})
+				.expect(400);
+		});
+
+		it('missing password field', () => {
+			return request(app)
+				.post('/api/users')
+				.send({
+					dni: '30000000',
+					email: '50000000@tpFullstack.com',
+					creditScore: 8
+				})
+				.expect(400);
+		});
+
+		it('missing credit score field', () => {
+			return request(app)
+				.post('/api/users')
+				.send({
+					dni: '30000000',
+					email: '50000000@tpFullstack.com',
+					password: '123456'
+				})
+				.expect(400);
+		});
+	});
+
 	describe('GET:users/{id}', () => {
 		it('gets existing user', done => {
 			request(app)
@@ -170,7 +300,7 @@ describe('Users tests', () => {
 			request(app)
 				.post('/api/users/get')
 				.set('authorization', globals.token)
-				.send([{dni: 50000000}, {dni: 40000000}])
+				.send([{dni: 50000000}, {dni: 10000000}])
 				.expect(200)
 				.then(result => {
 					assert.strictEqual(result.body.length, 1);
@@ -253,6 +383,23 @@ describe('Users tests', () => {
 				.set('authorization', globals.token)
 				.send([{cuit: null}])
 				.expect(400);
+		});
+
+		it('stress by passing 5000 dni', done => {
+			const dnis = [];
+			for(let i = 0; i < 5000; i++) {
+				dnis.push({dni: 50000000 + i});
+			}
+			request(app)
+				.post('/api/users/get')
+				.set('authorization', globals.token)
+				.send(dnis)
+				.expect(200)
+				.then(result => {
+					assert.strictEqual(result.body.length, 5000);
+					done();
+				})
+				.catch(error => done(error));
 		});
 
 		it('doesn\'t supply token', () => {
