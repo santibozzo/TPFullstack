@@ -8,7 +8,6 @@ exports.getRequestLimit = (req, res) => {
 				res.status(200).send(requestLimit.toObject());
 			})
 			.catch(error => {
-				console.error(error.message);
 				res.sendStatus(500);
 			});
 	}else {
@@ -27,8 +26,7 @@ exports.updateLimit = (req, res) => {
 				}
 			})
 			.catch(error => {
-				console.error(error.message);
-				if(error.name === 'CastError') {
+				if(error.name === 'CastError' || error.name === 'ValidationError') {
 					res.sendStatus(400);
 				}else {
 					res.sendStatus(500);

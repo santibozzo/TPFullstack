@@ -42,7 +42,7 @@ function getRequestLimit(dni, resolve, reject) {
 }
 
 function updateRequestLimit(dni, newValues, resolve, reject) {
-	requestLimit.updateOne({dni}, newValues)
+	requestLimit.updateOne({dni}, newValues, {runValidators: true})
 		.then(result => {
 			resolve && resolve(result);
 		})
