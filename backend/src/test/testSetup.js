@@ -23,6 +23,19 @@ mongoose.connect(`mongodb://${dataBase.host}:${dataBase.port}/${dataBase.name}Te
 	})
 	.catch(error => console.error(error));
 
+/* ---- DB Cleanup ---- */
+
+after(done => {
+	mongoose.connection.db.dropDatabase((err, result) => {
+		if(err) {
+			console.error(err);
+			done(err);
+		}
+		console.log('Test DB dropped');
+		done();
+	});
+});
+
 /* ---- Token generator ---- */
 
 exports.generateTokenForTests = (dni, limit) => {
