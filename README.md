@@ -58,8 +58,7 @@ src/resources/config.json:
     },
     "tokenSecretKey": "secretKey",
     "DBInitializer": {
-        "initUsersAmmount": 50,
-        "firstDNI": 50000000
+        "initUsersAmmount": 50
     }
 }
 ```

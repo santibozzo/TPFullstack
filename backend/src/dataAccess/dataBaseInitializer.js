@@ -1,8 +1,8 @@
+const FIRST_DNI = 50000000;
 
 const async = require('async');
 const config = require('../resources/config');
 const initAmmount = config.DBInitializer.initUsersAmmount;
-const firstDni = config.DBInitializer.firstDNI;
 const usersModel = require('../models/usersModel');
 const mongoose = require('mongoose');
 const connection = mongoose.connection;
@@ -32,11 +32,11 @@ function populateUsers(resolve, reject) {
 	for(let i = 0; i < initAmmount; i++) {
 		tasks.push((callback) => {
 			usersModel.createUser({
-				dni: firstDni + i,
-				email: `${firstDni + i}@tpfullstack.com`,
+				dni: FIRST_DNI + i,
+				email: `${FIRST_DNI + i}@tpfullstack.com`,
 				password: '123456',
 				creditScore: Math.floor(Math.random() * 5) + 1
-			}, false)
+			})
 				.then(result => callback(null, result))
 				.catch(error => callback(error.message));
 		});
