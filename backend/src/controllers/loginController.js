@@ -15,7 +15,6 @@ exports.login = (req, res) => {
 				}
 			})
 			.catch(error => {
-				console.error(error.message);
 				if(error.message === 'documentNotFound') {
 					res.status(404).send('User not found');
 				}else {

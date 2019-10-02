@@ -25,7 +25,6 @@ function createRequestLimit(dni, resolve, reject) {
 	const newRequestLimit = new requestLimit({dni});
 	newRequestLimit.save()
 		.then(() => {
-			console.log(`Request limit for ${dni} created`);
 			resolve && resolve(newRequestLimit);
 		})
 		.catch(error => reject && reject(error));
@@ -43,9 +42,8 @@ function getRequestLimit(dni, resolve, reject) {
 }
 
 function updateRequestLimit(dni, newValues, resolve, reject) {
-	requestLimit.updateOne({dni}, newValues)
+	requestLimit.updateOne({dni}, newValues, {runValidators: true})
 		.then(result => {
-			console.log(`${result.n} requestLimits documents updated`);
 			resolve && resolve(result);
 		})
 		.catch(error => reject && reject(error));

@@ -7,7 +7,6 @@ exports.createUser = (req, res) => {
 			res.status(201).send(response);
 		})
 		.catch(error => {
-			console.error(error.message);
 			if(error.code === 11000) {
 				res.status(400).send('DNI already in use');
 			}else if(error.name === 'ValidationError') {
@@ -26,7 +25,6 @@ exports.getUser = (req, res) => {
 			res.status(200).send(userInfo);
 		})
 		.catch(error => {
-			console.error(error.message);
 			if(error.message === 'documentNotFound') {
 				res.status(404).send('User not found');
 			}else if(error.name === 'CastError') {
@@ -62,7 +60,15 @@ function hasValidDni(user) {
 }
 
 function hasValidCuit(user) {
-	return user.cuit &&
-		user.cuit.toString().split('-').length === 3 &&
-		Number.isInteger(parseInt(user.cuit.split('-')[1], 10));
+	if(user.cuit) {
+		const parts = user.cuit.toString().split('-');
+		return (
+			parts.length === 3 &&
+			parts[0].length === 2 &&
+			parts[1].length === 8 &&
+			parts[2].length === 1 &&
+			Number.isInteger(parseInt(parts[1], 10))
+		);
+	}
+	return false;
 }

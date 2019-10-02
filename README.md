@@ -14,10 +14,13 @@
 
 ## Dependencias
 
-- [express (v4.17.1)](https://www.npmjs.com/package/express): Construir y levantar una API REST
+- [express (v4.17.1)](https://www.npmjs.com/package/express): Construir y levantar una API Rest
 - [mongoose (v5.7.0)](https://www.npmjs.com/package/mongoose): ODM para MongoDB
 - [jsonwebtoken (v8.5.1)](https://www.npmjs.com/package/jsonwebtoken): Generacion y manipulación de JWT
 - [moment (v2.24.0)](https://www.npmjs.com/package/moment): Manipulación de fechas
+- [async (v3.1.0)](https://www.npmjs.com/package/async): Utilidades para funciones/tareas asincronicas
+- [mocha (v6.2.0)](https://www.npmjs.com/package/mocha): Realizar tests unitarios
+- [supertest (v4.0.2)](https://www.npmjs.com/package/supertest): Levantar app (express) para testear API Rest 
 
 ## Requisitos
 
@@ -58,8 +61,7 @@ src/resources/config.json:
     },
     "tokenSecretKey": "secretKey",
     "DBInitializer": {
-        "initUsersAmmount": 50,
-        "firstDNI": 50000000
+        "initUsersAmmount": 5000
     }
 }
 ```
@@ -70,6 +72,15 @@ Server en el mismo host:port que el configurado en el config.json.
 - Levantar el proyecto/backend (estando parado en backend/):
 ```
 $ node server.js
+```
+
+## Tests Unitarios
+
+Los tests unitarios estan hechos con mocha y supertest. Al correrlos se crea una 
+nueva base que se popula con datos y una vez finalizados se elimina. 
+Para correr los tests usar:
+```
+$ npm test
 ```
 
 ## API
@@ -95,11 +106,10 @@ que se encuentra en [src/resources/tpFullStackAPI-v0.1.0.json](https://github.co
 al inicializar la base por primera vez.
 
 
-### /login
+### POST:login
 
 Si el usuario y contraseña son correctos devuelve un token de sesión.
 - **Autenticado:** NO
-- **Método:** POST
 - **PathParams:**
 - **QueryParams:**
 - **Request body:**
@@ -116,11 +126,10 @@ Si el usuario y contraseña son correctos devuelve un token de sesión.
 }
 ```
 
-### /users
+### POST:users
 
 Crea un nuevo usuario.
 - **Autenticado:** NO
-- **Método:** POST
 - **PathParams:**
 - **QueryParams:**
 - **Request body:**
@@ -137,11 +146,10 @@ Crea un nuevo usuario.
 User 40000000 created
 ```
 
-### /users/{dni}
+### GET:users/{dni}
 
 Devuelve la información de un usuario.
 - **Autenticado:** SI
-- **Método:** POST
 - **PathParams:**
     - dni
 - **QueryParams:**
@@ -155,14 +163,12 @@ Devuelve la información de un usuario.
 }
 ```
 
-### /users/get
+### POST:users/get
 
 Recibe una lista de dni/cuit y devuelve una lista de los usuarios relacionados a 
 esos dni/cuit. Si algún dni/cuit no se encuentra en la base se lo saltea.
 - **Autenticado:** SI
-- **Método:** POST
 - **PathParams:**
-    - dni
 - **QueryParams:**
 - **Request body:**
 ```
@@ -185,12 +191,11 @@ esos dni/cuit. Si algún dni/cuit no se encuentra en la base se lo saltea.
 ]
 ```
 
-### /request-limits/{dni}
+### GET:request-limits/{dni}
 
 Devuelve la información relacionada al limite de requests por hora que tiene el 
 usuario. Sólo se puede obtener la información del usuario de la sesión.
 - **Autenticado:** SI
-- **Método:** GET
 - **PathParams:**
     - dni
 - **QueryParams:**
@@ -205,12 +210,11 @@ usuario. Sólo se puede obtener la información del usuario de la sesión.
 }
 ```
 
-### /request-limits/{dni}
+### PATCH:request-limits/{dni}
 
 Cambia el limite de requests por hora del usuario por el limite dado. Sólo se puede 
 cambiar el limite del usuario de la sesión.
 - **Autenticado:** SI
-- **Método:** PATCH
 - **PathParams:**
     - dni
 - **QueryParams:**
