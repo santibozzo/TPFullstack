@@ -35,7 +35,11 @@ exports.generateExpiredToken = dni => {
 
 function generateTokenForTests(dni, limit, resolve, reject) {
 	const token = jwt.sign({dni}, config.tokenSecretKey, {expiresIn: '1h'});
-	requestLimitsModel.updateRequestLimit(dni, {limit, uses: 0})
-		.then(result => resolve && resolve(token))
+	requestLimitsModel.createRequestLimit(dni)
+		.then(result => {
+			requestLimitsModel.updateRequestLimit(dni, {limit, uses: 0})
+				.then(result => resolve && resolve(token))
+				.catch(error => reject && reject(error));
+		})
 		.catch(error => reject && reject(error));
 }
