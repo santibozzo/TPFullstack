@@ -7,7 +7,6 @@ exports.createUser = (req, res) => {
 			res.status(201).send(response);
 		})
 		.catch(error => {
-			console.error(error.message);
 			if(error.code === 11000) {
 				res.status(400).send('DNI already in use');
 			}else if(error.name === 'ValidationError') {

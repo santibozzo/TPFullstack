@@ -11,8 +11,8 @@ const user = mongoose.model('users', userSchema);
 const userCreditScoreProj = {_id: false, __v: false, email: false, password: false};
 const userInfoProj = {_id: false, __v: false};
 
-exports.createUser = (userInfo, log = true) => {
-	return new Promise((resolve, reject) => createUser(userInfo, log, resolve, reject));
+exports.createUser = userInfo => {
+	return new Promise((resolve, reject) => createUser(userInfo, resolve, reject));
 };
 exports.getUser = dni => {
 	return new Promise((resolve, reject) => getUser(dni, resolve, reject));
@@ -21,11 +21,10 @@ exports.getUsersList = dniList => {
 	return new Promise((resolve, reject) => getUsersList(dniList, resolve, reject));
 };
 
-function createUser(userInfo, log, resolve, reject) {
+function createUser(userInfo, resolve, reject) {
 	const newUser = new user(userInfo);
 	newUser.save()
 		.then(() => {
-			log && console.log(`User ${userInfo.dni} created`);
 			resolve && resolve(`User ${userInfo.dni} created`);
 		})
 		.catch(error => reject && reject(error));
