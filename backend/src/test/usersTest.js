@@ -106,6 +106,18 @@ describe('Users tests', () => {
 				.expect(400);
 		});
 
+		it('credit score lower than 1', () => {
+			return request(app)
+				.post('/api/users')
+				.send({
+					dni: '30000000',
+					email: '50000000@tpFullstack.com',
+					password: '123456',
+					creditScore: 0
+				})
+				.expect(400);
+		});
+
 		it('missing dni field', () => {
 			return request(app)
 				.post('/api/users')

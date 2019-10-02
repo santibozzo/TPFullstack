@@ -5,7 +5,7 @@ const userSchema = new Schema({
 	dni: {type: Number, unique: true, required: true, validate: dni => dni.toString().length === 8},
 	email: {type: String, required: true},
 	password: {type: String, required: true},
-	creditScore: {type: Number, required: true, validate: score => 0 <= score && score <= 5}
+	creditScore: {type: Number, required: true, validate: score => 0 < score && score <= 5}
 });
 const user = mongoose.model('users', userSchema);
 const userCreditScoreProj = {_id: false, __v: false, email: false, password: false};
