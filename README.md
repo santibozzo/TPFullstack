@@ -9,6 +9,7 @@
 - **Backend:** nodejs (v12.7.0*)
 - **Base de datos:** MongoDB (v4.2.0 Community)
 - **Manejador de dependencias:** npm (v6.10.0*)
+- **Servidor:** AWS EC2 (Amazon Linux)
 
 *Versiones usadas en desarrollo, puede llegar a funcionar con otras.
 
@@ -31,8 +32,7 @@ Descargarse e instalar nodejs, la versión 12.7.0 ya viene con npm v6.10.0 inclu
 
 ### MongoDB
 
-Descargarse e instalar MongoDB Community Server v4.2.0, es muy probable que con otra 
-versión no funcione ya que mongoose v5.7.0 hace uso del driver 4.2.0 de MongoDB.
+Descargarse e instalar MongoDB Community Server v4.2.0.
 
 - [MongoDB Community Server](https://www.mongodb.com/download-center/community) 
 (elegir la versión 4.2.0)
@@ -81,6 +81,95 @@ nueva base que se popula con datos y una vez finalizados se elimina.
 Para correr los tests usar:
 ```
 $ npm test
+```
+
+## Servidor
+
+La aplicación se encuentra hosteada en una instancia EC2 (Amazon Web Service) con 
+Amazon Linux. Se pueden hacer requests a http://ip.publica.de.instancia:3001/api.
+A continuación se muestra como levantar el proyecto en una instancia EC2:
+
+### Configuración
+
+- Crear instancia de EC2 con Amazon Linux
+- Configurar puertos 80 y 3001 para http requests
+- Poder conectarse por SSH (configurar puerto 22)
+
+### Instalar MongoDB
+
+- Actualizar paquetes de yum:
+```
+$ sudo yum -y update
+```
+
+- Crear archivo /etc/yum.repos.d/mongodb-org-4.0.repo con el siguiente contenido:
+```
+[mongodb-org-4.0]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/4.0/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-4.0.asc
+```
+
+- Instalar:
+```
+$ sudo yum -y install mongodb-org
+```
+
+- Para levantarlo correr:
+```
+$ sudo service mongod start
+```
+
+### Instalar proyecto
+
+- Instalar nvm (node version manager) para instalar nodejs:
+```
+$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
+```
+
+- Instalar node 12.7 (reiniciar terminal primero):
+```
+$ nvm install 12.7
+```
+
+- Instalar git:
+```
+$ sudo yum install -y git
+```
+
+- Clonar proyecto:
+```
+$ git clone https://github.com/santibozzo/TPFullstack.git
+```
+
+- Ir a backend/ e instalar dependencias de npm:
+```
+$ npm ci
+```
+
+### Levantar aplicación
+
+Para que la aplicación quede corriendo mientras la instancia esta activa vamos a 
+correrla con [pm2 (node process manager)](http://pm2.keymetrics.io/), y vamos a 
+configurarlo para que levante la aplicación cada vez que la instancia se inicie.
+
+- Instalar pm2:
+```
+$ npm install -g pm2
+```
+
+- Estando parado en backend/ levantamos la app con pm2:
+```
+$ pm2 server.js
+```
+
+- Luego para configurar que esto siempre se haga al iniciar la instancia, corremos los 
+siguientes comandos y corremos el comando que se imprime en pantalla al correr startup:
+```
+$ pm2 save
+$ pm2 startup
 ```
 
 ## API
