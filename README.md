@@ -26,13 +26,13 @@
 
 ## Dependencias
 
-- [express (v4.17.1)](https://www.npmjs.com/package/express): Construir y levantar una API Rest
+- [express (v4.17.1)](https://www.npmjs.com/package/express): Construir y levantar una API REST
 - [mongoose (v5.7.0)](https://www.npmjs.com/package/mongoose): ODM para MongoDB
 - [jsonwebtoken (v8.5.1)](https://www.npmjs.com/package/jsonwebtoken): Generacion y manipulación de JWT
 - [moment (v2.24.0)](https://www.npmjs.com/package/moment): Manipulación de fechas
 - [async (v3.1.0)](https://www.npmjs.com/package/async): Utilidades para funciones/tareas asincronicas
 - [mocha (v6.2.0)](https://www.npmjs.com/package/mocha): Realizar tests unitarios
-- [supertest (v4.0.2)](https://www.npmjs.com/package/supertest): Levantar app (express) para testear API Rest 
+- [supertest (v4.0.2)](https://www.npmjs.com/package/supertest): Levantar app (express) para testear API REST 
 
 ## Requisitos
 
@@ -261,14 +261,13 @@ unitarias relacionadas.
 
 ## API
 
-### Restlet Client
+### Talend API Tester
 
-Es un cliente que te deja documentar y probar APIs rest (como postman). En caso de 
+Es un cliente que te deja documentar y probar APIs REST (como postman). En caso de 
 usarlo se puede importar la API entera del proyecto lista para probar con el archivo 
 que se encuentra en [src/resources/tpFullStackAPI-v0.1.0.json](https://github.com/santibozzo/TPFullstack/blob/master/backend/src/resources/tpFullStackAPI-v0.1.0.json).
 
-- [Reslet Client (sitio)](https://restlet.com/modules/client/)
-- [Reslet Client (extensión chrome)](https://chrome.google.com/webstore/detail/restlet-client-rest-api-t/aejoelaoggembcahagimdiliamlcdmfm)
+- [extensión chrome](https://chrome.google.com/webstore/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm)
 
 ### General
 
