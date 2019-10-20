@@ -172,6 +172,82 @@ $ pm2 save
 $ pm2 startup
 ```
 
+## Estructura backend
+
+![diagrama del flujo](backend/src/resources/flowDiagram.png)
+
+###src/
+
+- controllers/  
+  - loginController.js
+  - requestLimitsController.js
+  - usersController.js
+- dataAccess/
+  - dataBaseInitializer.js
+- interceptors/
+  - authInterceptor.js
+- models/
+  - requestLimitsModel.js
+  - usersModel.js
+- resources/
+  - config.json
+  - flowDiagram.png
+  - tpFullStackAPI-vX.X.X.json
+- routers/
+  - loginRouter.js
+  - requestLimitsRouter.js
+  - usersRouter.js
+- test/
+  - loginTest.js
+  - requestLimitsTest.js
+  - testSetup.js
+  - usersTest.js
+
+
+### server.js
+
+Se encarga de:
+- levantar la API y escuchar futuros requests
+- Apuntar los distintos endpoints a sus respectivos routers
+- Conectarse a la base de datos
+
+### dataAccess/dataBaseInitializer.js
+
+Se encarga de popular la base con datos en caso de que se encuentre vacía.
+
+### routers/
+
+Cada router está asignado a un endpoint y dependiendo el request que recibe llama al 
+método correspondiente de su controller para luego devolver la respuesta. En caso de 
+ser necesario, también le asigna a la request un interceptor.
+
+### interceptors/ 
+
+Se ejecutan antes de la logica que se encuntra en los controllers. Pueden devolver una 
+respuesta cortando el flujo del request, o dejar que continúe con la lógica del controller.
+
+### controllers/
+
+Reciben el request y realizan la lógica del negocio, luego generan una respuesta y la 
+devuelven. En caso de ser necesario, piden datos a la base usando los models.
+
+### models/
+
+Cada model representa una colección de la base de datos y se encarga de todas las 
+acciones CRUD.
+
+### resources/
+
+Se encuentran archivos de configuración y documentación.
+
+### test/
+
+Se encuentran las pruebas unitarias de la API, hay dos tipos de archivos:
+- **testSetup.js:** Tiene las configuraciones que se corren antes, durante, y despues 
+de las pruebas.
+- **endpointTest.js:** Hay uno por cada endpoint/lógica y contiene todas las pruebas 
+unitarias relacionadas.
+
 ## API
 
 ### Restlet Client
