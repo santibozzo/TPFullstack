@@ -38,19 +38,19 @@ after(done => {
 
 /* ---- Token generator ---- */
 
-exports.generateTokenForTests = (dni, limit) => {
-	return new Promise((resolve, reject) => generateTokenForTests(dni, limit, resolve, reject));
+exports.generateTokenForTests = (dni, limit, infoRequestLimit = 10000) => {
+	return new Promise((resolve, reject) => generateTokenForTests(dni, limit, infoRequestLimit, resolve, reject));
 };
 
 exports.generateExpiredToken = dni => {
 	return jwt.sign({dni}, config.tokenSecretKey, {expiresIn: '0h'});
 };
 
-function generateTokenForTests(dni, limit, resolve, reject) {
+function generateTokenForTests(dni, limit, infoRequestLimit, resolve, reject) {
 	const token = jwt.sign({dni}, config.tokenSecretKey, {expiresIn: '1h'});
 	requestLimitsModel.createRequestLimit(dni)
 		.then(result => {
-			requestLimitsModel.updateRequestLimit(dni, {limit, uses: 0})
+			requestLimitsModel.updateRequestLimit(dni, {limit, uses: 0, infoRequestLimit, infoRequestUses: 0})
 				.then(result => resolve && resolve(token))
 				.catch(error => reject && reject(error));
 		})

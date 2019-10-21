@@ -6,6 +6,8 @@ const requestLimitSchema = new Schema({
 	dni: {type: Number, unique: true, required: true, validate: dni => dni.toString().length === 8},
 	limit: {type: Number, required: true, default: 10, min: 1},
 	uses: {type: Number, required: true, default: 0},
+	infoRequestLimit: {type: Number, required: true, default: 10000, min: 1},
+	infoRequestUses: {type: Number, required: true, default: 0},
 	lastRefresh: {type: String, required: true, default: moment().format('DD/MM-HH:mm')}
 });
 const requestLimit = mongoose.model('requestLimits', requestLimitSchema);
