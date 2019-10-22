@@ -277,6 +277,8 @@ que se encuentra en [src/resources/tpFullStackAPI-v0.1.0.json](https://github.co
 - A los endpoints que son autenticados es necesario pasarles por el header 
 "authorization" el token de sesión que se consigue con **/login**.
 - Cada sesión dura 1h y dependiendo el usuario se tiene un limite de requests.
+- Además del limite de requests, también hay un limite de la cantidad de información de 
+usuarios que se puede pedir.
 - Los ejemplos de la siguiente documentación usan datos que se crean por defecto 
 al inicializar la base por primera vez.
 
@@ -387,8 +389,8 @@ usuario. Sólo se puede obtener la información del usuario de la sesión.
 
 ### PATCH:request-limits/{dni}
 
-Cambia el limite de requests por hora del usuario por el limite dado. Sólo se puede 
-cambiar el limite del usuario de la sesión.
+Cambia el limite de requests y/o pedidos de información de usuarios que se pueden hacer 
+por sesión. Sólo se puede cambiar el limite del usuario de la sesión.
 - **Autenticado:** SI
 - **PathParams:**
     - dni
@@ -396,7 +398,8 @@ cambiar el limite del usuario de la sesión.
 - **Request body:**
 ```
 {
-    "limit": 20
+    "limit": 20,
+    "infoRequestLimit": 6000
 }
 ```
 - **Response body:**
