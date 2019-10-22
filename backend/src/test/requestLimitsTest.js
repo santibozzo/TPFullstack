@@ -247,4 +247,25 @@ describe('RequestLimits tests', () => {
 				.expect(401);
 		});
 	});
+
+	describe('Request limit validation', () => {
+		it('overpasses request limit', done => {
+			testSetup.generateTokenForTests(50000011, 1)
+				.then(token => {
+					request(app)
+						.get('/api/request-limits/50000011')
+						.set('authorization', token)
+						.expect(200)
+						.then(response => {
+							assert.strictEqual(response.body.uses, 1);
+							request(app)
+								.get('/api/request-limits/50000011')
+								.set('authorization', token)
+								.expect(401, done);
+						})
+						.catch(error => done(error));
+				})
+				.catch(error => done(error));
+		});
+	});
 });
