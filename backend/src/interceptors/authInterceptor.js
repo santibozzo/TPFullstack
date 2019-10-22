@@ -27,7 +27,7 @@ function checkRequestLimit(dni, res, next) {
 	requestLimitsModel.getRequestLimit(dni)
 		.then(requesLimit => {
 			if(moment().isAfter(moment(requesLimit.lastRefresh, 'DD/MM-HH:mm').add(1, 'hours'))) {
-				updateRequestLimit(dni, res, next, {uses: 0, lastRefresh: moment().format('DD/MM-HH:mm')});
+				updateRequestLimit(dni, res, next, {uses: 0, infoRequestUses: 0, lastRefresh: moment().format('DD/MM-HH:mm')});
 			}else if(requesLimit.uses < requesLimit.limit) {
 				updateRequestLimit(dni, res, next, {uses: requesLimit.uses + 1});
 			}else {

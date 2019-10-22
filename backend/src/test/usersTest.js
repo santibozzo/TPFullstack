@@ -13,7 +13,7 @@ app.use('/api/users', usersRouter);
 describe('Users tests', () => {
 	before(done => {
 		globals['expiredToken'] = testSetup.generateExpiredToken(50000000);
-		testSetup.generateTokenForTests(50000000, 200)
+		testSetup.generateTokenForTests(50000000, 200, 5500)
 			.then(token => {
 				globals['token'] = token;
 				done();
@@ -197,6 +197,26 @@ describe('Users tests', () => {
 				.get('/api/users/50asd')
 				.set('authorization', globals.token)
 				.expect(400);
+		});
+
+		it('overpasses infoRequestLimit', () => {
+			testSetup.generateTokenForTests(50000010, 5, 1)
+				.then(token => {
+					request(app)
+						.get('/api/users/50000000')
+						.set('authorization', token)
+						.expect(200)
+						.then(response => {
+							const user = response.body;
+							assert.strictEqual(user.dni, 50000000);
+							assert.strictEqual(user.email, '50000000@tpfullstack.com');
+							request(app)
+								.get('/api/users/50000000')
+								.set('authorization', token)
+								.expect(401);
+						});
+				})
+				.catch(error => assert.fail(error.message));
 		});
 
 		it('doesn\'t supply token', () => {
@@ -412,6 +432,18 @@ describe('Users tests', () => {
 					done();
 				})
 				.catch(error => done(error));
+		});
+
+		it('overpasses infoRequestLimit', () => {
+			const dnis = [];
+			for(let i = 0; i < 6000; i++) {
+				dnis.push({dni: 50000000 + i});
+			}
+			request(app)
+				.post('/api/users/get')
+				.set('authorization', globals.token)
+				.send(dnis)
+				.expect(401);
 		});
 
 		it('doesn\'t supply token', () => {
