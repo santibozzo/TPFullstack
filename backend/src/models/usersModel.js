@@ -21,6 +21,10 @@ exports.getUsersList = dniList => {
 	return new Promise((resolve, reject) => getUsersList(dniList, resolve, reject));
 };
 
+exports.deleteUser = dni => {
+	return new Promise((resolve, reject) => deleteUser(dni, resolve, reject));
+};
+
 function createUser(userInfo, resolve, reject) {
 	const newUser = new user(userInfo);
 	newUser.save()
@@ -44,5 +48,16 @@ function getUser(dni, resolve, reject) {
 function getUsersList(dniList, resolve, reject) {
 	user.find({dni: {$in: dniList}}, userCreditScoreProj)
 		.then(result => resolve && resolve(result))
+		.catch(error => reject && reject(error));
+}
+
+function deleteUser(dni, resolve, reject) {
+	user.deleteOne({dni})
+		.then(result => {
+			if(result.deletedCount === 0) {
+				reject && reject(new Error('documentNotFound'));
+			}
+			resolve && resolve(result);
+		})
 		.catch(error => reject && reject(error));
 }

@@ -13,7 +13,7 @@ app.use('/api/users', usersRouter);
 describe('Users tests', () => {
 	before(done => {
 		globals['expiredToken'] = testSetup.generateExpiredToken(50000000);
-		testSetup.generateTokenForTests(50000000, 200)
+		testSetup.generateTokenForTests(50000000, 200, 5500)
 			.then(token => {
 				globals['token'] = token;
 				done();
@@ -163,7 +163,7 @@ describe('Users tests', () => {
 		});
 	});
 
-	describe('GET:users/{id}', () => {
+	describe('GET:users/{dni}', () => {
 		it('gets existing user', done => {
 			request(app)
 				.get('/api/users/50000000')
@@ -197,6 +197,26 @@ describe('Users tests', () => {
 				.get('/api/users/50asd')
 				.set('authorization', globals.token)
 				.expect(400);
+		});
+
+		it('overpasses infoRequestLimit', () => {
+			testSetup.generateTokenForTests(50000010, 5, 1)
+				.then(token => {
+					request(app)
+						.get('/api/users/50000000')
+						.set('authorization', token)
+						.expect(200)
+						.then(response => {
+							const user = response.body;
+							assert.strictEqual(user.dni, 50000000);
+							assert.strictEqual(user.email, '50000000@tpfullstack.com');
+							request(app)
+								.get('/api/users/50000000')
+								.set('authorization', token)
+								.expect(401);
+						});
+				})
+				.catch(error => assert.fail(error.message));
 		});
 
 		it('doesn\'t supply token', () => {
@@ -414,6 +434,18 @@ describe('Users tests', () => {
 				.catch(error => done(error));
 		});
 
+		it('overpasses infoRequestLimit', () => {
+			const dnis = [];
+			for(let i = 0; i < 6000; i++) {
+				dnis.push({dni: 50000000 + i});
+			}
+			request(app)
+				.post('/api/users/get')
+				.set('authorization', globals.token)
+				.send(dnis)
+				.expect(401);
+		});
+
 		it('doesn\'t supply token', () => {
 			return request(app)
 				.post('/api/users/get')
@@ -437,5 +469,71 @@ describe('Users tests', () => {
 				.expect(401);
 		});
 
+	});
+
+	describe('DELETE:users/{dni}', () => {
+		before(done => {
+			testSetup.generateTokenForTests(50000020, 200, 5500)
+				.then(token => {
+					globals['deleteToken'] = token;
+					done();
+				})
+				.catch(error => done(error));
+		});
+
+		it('delete other user', () => {
+			return request(app)
+				.delete('/api/users/50000020')
+				.set('authorization', globals.token)
+				.expect(401);
+		});
+
+		it('delete non-existing user', () => {
+			return request(app)
+				.delete('/api/users/10000000')
+				.set('authorization', globals.token)
+				.expect(401);
+		});
+
+		it('invalid dni', () => {
+			return request(app)
+				.delete('/api/users/100asd')
+				.set('authorization', globals.token)
+				.expect(401);
+		});
+
+		it('delete own user, then tries again', done => {
+			request(app)
+				.delete('/api/users/50000020')
+				.set('authorization', globals.deleteToken)
+				.expect(200)
+				.then(() => {
+					request(app)
+						.delete('/api/users/50000010')
+						.set('authorization', globals.deleteToken)
+						.expect(401, done);
+				})
+				.catch(error => done(error));
+		});
+
+		it('doesn\'t supply token', () => {
+			return request(app)
+				.delete('/api/users/50000020')
+				.expect(401);
+		});
+
+		it('supplies invalid token', () => {
+			return request(app)
+				.delete('/api/users/50000020')
+				.set('authorization', 'invalidToken')
+				.expect(401);
+		});
+
+		it('supplies expired token', () => {
+			return request(app)
+				.delete('/api/users/50000020')
+				.set('authorization', globals.expiredToken)
+				.expect(401);
+		});
 	});
 });

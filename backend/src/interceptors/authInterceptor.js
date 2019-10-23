@@ -1,6 +1,7 @@
 
 const config = require('../resources/config');
 const requestLimitsModel = require('../models/requestLimitsModel');
+const usersModel = require('../models/usersModel');
 const moment = require('moment');
 const jwt = require('jsonwebtoken');
 
@@ -12,8 +13,11 @@ exports.validateToken = (req, res, next) => {
 	if(token) {
 		jwt.verify(token, config.tokenSecretKey, (err, decoded) => {
 			if(decoded) {
-				const dni = decoded.dni;
-				checkRequestLimit(dni, res, next);
+				usersModel.getUser(decoded.dni)
+					.then(user => {
+						checkRequestLimit(user.dni, res, next);
+					})
+					.catch(error => res.status(401).send('Invalid session user'));
 			}else {
 				res.status(401).send('Invalid token');
 			}
@@ -27,7 +31,7 @@ function checkRequestLimit(dni, res, next) {
 	requestLimitsModel.getRequestLimit(dni)
 		.then(requesLimit => {
 			if(moment().isAfter(moment(requesLimit.lastRefresh, 'DD/MM-HH:mm').add(1, 'hours'))) {
-				updateRequestLimit(dni, res, next, {uses: 0, lastRefresh: moment().format('DD/MM-HH:mm')});
+				updateRequestLimit(dni, res, next, {uses: 0, infoRequestUses: 0, lastRefresh: moment().format('DD/MM-HH:mm')});
 			}else if(requesLimit.uses < requesLimit.limit) {
 				updateRequestLimit(dni, res, next, {uses: requesLimit.uses + 1});
 			}else {

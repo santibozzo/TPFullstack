@@ -6,6 +6,8 @@ const requestLimitSchema = new Schema({
 	dni: {type: Number, unique: true, required: true, validate: dni => dni.toString().length === 8},
 	limit: {type: Number, required: true, default: 10, min: 1},
 	uses: {type: Number, required: true, default: 0},
+	infoRequestLimit: {type: Number, required: true, default: 10000, min: 1},
+	infoRequestUses: {type: Number, required: true, default: 0},
 	lastRefresh: {type: String, required: true, default: moment().format('DD/MM-HH:mm')}
 });
 const requestLimit = mongoose.model('requestLimits', requestLimitSchema);
@@ -19,6 +21,9 @@ exports.getRequestLimit = dni => {
 };
 exports.updateRequestLimit = (dni, newValues) => {
 	return new Promise((resolve, reject) => updateRequestLimit(dni, newValues, resolve, reject));
+};
+exports.deleteRequestLimit = dni => {
+	return new Promise((resolve, reject) => deleteRequestLimit(dni, resolve, reject));
 };
 
 function createRequestLimit(dni, resolve, reject) {
@@ -46,5 +51,11 @@ function updateRequestLimit(dni, newValues, resolve, reject) {
 		.then(result => {
 			resolve && resolve(result);
 		})
+		.catch(error => reject && reject(error));
+}
+
+function deleteRequestLimit(dni, resolve, reject) {
+	requestLimit.deleteOne({dni})
+		.then(result => resolve && resolve(result))
 		.catch(error => reject && reject(error));
 }

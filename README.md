@@ -4,6 +4,17 @@
 - **Cursada:** 2do cuatrimestre 2019
 - **Materias:** Técnicas avanzadas de programación y Arquitectura web
 
+## Índice
+
+- [Arquitectura](https://github.com/santibozzo/TPFullstack#arquitectura)
+- [Dependencias](https://github.com/santibozzo/TPFullstack#dependencias)
+- [Requisitos](https://github.com/santibozzo/TPFullstack#requisitos)
+- [Ambiente local](https://github.com/santibozzo/TPFullstack#ambiente-local)
+- [Tests Unitarios](https://github.com/santibozzo/TPFullstack#tests-unitarios)
+- [Servidor](https://github.com/santibozzo/TPFullstack#servidor)
+- [Estructura backend](https://github.com/santibozzo/TPFullstack#estructura-backend)
+- [API](https://github.com/santibozzo/TPFullstack#api)
+
 ## Arquitectura
 
 - **Backend:** nodejs (v12.7.0*)
@@ -15,13 +26,13 @@
 
 ## Dependencias
 
-- [express (v4.17.1)](https://www.npmjs.com/package/express): Construir y levantar una API Rest
+- [express (v4.17.1)](https://www.npmjs.com/package/express): Construir y levantar una API REST
 - [mongoose (v5.7.0)](https://www.npmjs.com/package/mongoose): ODM para MongoDB
 - [jsonwebtoken (v8.5.1)](https://www.npmjs.com/package/jsonwebtoken): Generacion y manipulación de JWT
 - [moment (v2.24.0)](https://www.npmjs.com/package/moment): Manipulación de fechas
 - [async (v3.1.0)](https://www.npmjs.com/package/async): Utilidades para funciones/tareas asincronicas
 - [mocha (v6.2.0)](https://www.npmjs.com/package/mocha): Realizar tests unitarios
-- [supertest (v4.0.2)](https://www.npmjs.com/package/supertest): Levantar app (express) para testear API Rest 
+- [supertest (v4.0.2)](https://www.npmjs.com/package/supertest): Levantar app (express) para testear API REST 
 
 ## Requisitos
 
@@ -172,16 +183,91 @@ $ pm2 save
 $ pm2 startup
 ```
 
+## Estructura backend
+
+![diagrama del flujo](backend/src/resources/flowDiagram.png)
+
+### src/
+
+- controllers/  
+  - loginController.js
+  - requestLimitsController.js
+  - usersController.js
+- dataAccess/
+  - dataBaseInitializer.js
+- interceptors/
+  - authInterceptor.js
+- models/
+  - requestLimitsModel.js
+  - usersModel.js
+- resources/
+  - config.json
+  - flowDiagram.png
+  - tpFullStackAPI-vX.X.X.json
+- routers/
+  - loginRouter.js
+  - requestLimitsRouter.js
+  - usersRouter.js
+- test/
+  - loginTest.js
+  - requestLimitsTest.js
+  - testSetup.js
+  - usersTest.js
+
+
+### server.js
+
+Se encarga de:
+- levantar la API y escuchar futuros requests
+- Apuntar los distintos endpoints a sus respectivos routers
+- Conectarse a la base de datos
+
+### dataAccess/dataBaseInitializer.js
+
+Se encarga de popular la base con datos en caso de que se encuentre vacía.
+
+### routers/
+
+Cada router está asignado a un endpoint y dependiendo el request que recibe llama al 
+método correspondiente de su controller para luego devolver la respuesta. En caso de 
+ser necesario, también le asigna a la request un interceptor.
+
+### interceptors/ 
+
+Se ejecutan antes de la logica que se encuntra en los controllers. Pueden devolver una 
+respuesta cortando el flujo del request, o dejar que continúe con la lógica del controller.
+
+### controllers/
+
+Reciben el request y realizan la lógica del negocio, luego generan una respuesta y la 
+devuelven. En caso de ser necesario, piden datos a la base usando los models.
+
+### models/
+
+Cada model representa una colección de la base de datos y se encarga de todas las 
+acciones CRUD.
+
+### resources/
+
+Se encuentran archivos de configuración y documentación.
+
+### test/
+
+Se encuentran las pruebas unitarias de la API, hay dos tipos de archivos:
+- **testSetup.js:** Tiene las configuraciones que se corren antes, durante, y despues 
+de las pruebas.
+- **endpointTest.js:** Hay uno por cada endpoint/lógica y contiene todas las pruebas 
+unitarias relacionadas.
+
 ## API
 
-### Restlet Client
+### Talend API Tester
 
-Es un cliente que te deja documentar y probar APIs rest (como postman). En caso de 
+Es un cliente que te deja documentar y probar APIs REST (como postman). En caso de 
 usarlo se puede importar la API entera del proyecto lista para probar con el archivo 
-que se encuentra en [src/resources/tpFullStackAPI-v0.1.0.json](https://github.com/santibozzo/TPFullstack/blob/master/backend/src/resources/tpFullStackAPI-v0.1.0.json).
+que se encuentra en [src/resources/tpFullStackAPI-v0.4.0.json](https://github.com/santibozzo/TPFullstack/blob/master/backend/src/resources/tpFullStackAPI-v0.4.0.json).
 
-- [Reslet Client (sitio)](https://restlet.com/modules/client/)
-- [Reslet Client (extensión chrome)](https://chrome.google.com/webstore/detail/restlet-client-rest-api-t/aejoelaoggembcahagimdiliamlcdmfm)
+- [extensión chrome](https://chrome.google.com/webstore/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm)
 
 ### General
 
@@ -191,6 +277,8 @@ que se encuentra en [src/resources/tpFullStackAPI-v0.1.0.json](https://github.co
 - A los endpoints que son autenticados es necesario pasarles por el header 
 "authorization" el token de sesión que se consigue con **/login**.
 - Cada sesión dura 1h y dependiendo el usuario se tiene un limite de requests.
+- Además del limite de requests, también hay un limite de la cantidad de información de 
+usuarios que se puede pedir.
 - Los ejemplos de la siguiente documentación usan datos que se crean por defecto 
 al inicializar la base por primera vez.
 
@@ -280,6 +368,19 @@ esos dni/cuit. Si algún dni/cuit no se encuentra en la base se lo saltea.
 ]
 ```
 
+### DELETE:users/{dni}
+
+Elimina el usuario dado. Sólo permite eliminar el usuario de la sesión.
+- **Autenticado:** SI
+- **PathParams:**
+    - dni
+- **QueryParams:**
+- **Request body:**
+- **Response body:**
+```
+User {dni} deleted
+```
+
 ### GET:request-limits/{dni}
 
 Devuelve la información relacionada al limite de requests por hora que tiene el 
@@ -301,8 +402,8 @@ usuario. Sólo se puede obtener la información del usuario de la sesión.
 
 ### PATCH:request-limits/{dni}
 
-Cambia el limite de requests por hora del usuario por el limite dado. Sólo se puede 
-cambiar el limite del usuario de la sesión.
+Cambia el limite de requests y/o pedidos de información de usuarios que se pueden hacer 
+por sesión. Sólo se puede cambiar el limite del usuario de la sesión.
 - **Autenticado:** SI
 - **PathParams:**
     - dni
@@ -310,7 +411,8 @@ cambiar el limite del usuario de la sesión.
 - **Request body:**
 ```
 {
-    "limit": 20
+    "limit": 20,
+    "infoRequestLimit": 6000
 }
 ```
 - **Response body:**
