@@ -22,6 +22,9 @@ exports.getRequestLimit = dni => {
 exports.updateRequestLimit = (dni, newValues) => {
 	return new Promise((resolve, reject) => updateRequestLimit(dni, newValues, resolve, reject));
 };
+exports.deleteRequestLimit = dni => {
+	return new Promise((resolve, reject) => deleteRequestLimit(dni, resolve, reject));
+};
 
 function createRequestLimit(dni, resolve, reject) {
 	const newRequestLimit = new requestLimit({dni});
@@ -48,5 +51,11 @@ function updateRequestLimit(dni, newValues, resolve, reject) {
 		.then(result => {
 			resolve && resolve(result);
 		})
+		.catch(error => reject && reject(error));
+}
+
+function deleteRequestLimit(dni, resolve, reject) {
+	requestLimit.deleteOne({dni})
+		.then(result => resolve && resolve(result))
 		.catch(error => reject && reject(error));
 }

@@ -76,6 +76,25 @@ exports.getUsersList = (req, res) => {
 		.catch(error => res.sendStatus(500));
 };
 
+exports.deleteUser = (req, res) => {
+	if(req.params.dni !== res.locals.dni) {
+		res.status(401).send('Can only delete own user');
+	}else {
+		usersModel.deleteUser(req.params.dni)
+			.then(result => {
+				requestLimitsModel.deleteRequestLimit(req.params.dni);
+				res.status(200).send(`User ${req.params.dni} deleted`);
+			})
+			.catch(error => {
+				if(error.message === 'documentNotFound') {
+					res.status(404).send('User not found');
+				}else {
+					res.sendStatus(500);
+				}
+			});
+	}
+};
+
 function hasValidDni(user) {
 	return user.dni && Number.isInteger(user.dni);
 }
