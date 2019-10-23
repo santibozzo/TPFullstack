@@ -163,7 +163,7 @@ describe('Users tests', () => {
 		});
 	});
 
-	describe('GET:users/{id}', () => {
+	describe('GET:users/{dni}', () => {
 		it('gets existing user', done => {
 			request(app)
 				.get('/api/users/50000000')
@@ -469,5 +469,71 @@ describe('Users tests', () => {
 				.expect(401);
 		});
 
+	});
+
+	describe('DELETE:users/{dni}', () => {
+		before(done => {
+			testSetup.generateTokenForTests(50000020, 200, 5500)
+				.then(token => {
+					globals['deleteToken'] = token;
+					done();
+				})
+				.catch(error => done(error));
+		});
+
+		it('delete other user', () => {
+			return request(app)
+				.delete('/api/users/50000020')
+				.set('authorization', globals.token)
+				.expect(401);
+		});
+
+		it('delete non-existing user', () => {
+			return request(app)
+				.delete('/api/users/10000000')
+				.set('authorization', globals.token)
+				.expect(401);
+		});
+
+		it('invalid dni', () => {
+			return request(app)
+				.delete('/api/users/100asd')
+				.set('authorization', globals.token)
+				.expect(401);
+		});
+
+		it('delete own user, then tries again', done => {
+			request(app)
+				.delete('/api/users/50000020')
+				.set('authorization', globals.deleteToken)
+				.expect(200)
+				.then(() => {
+					request(app)
+						.delete('/api/users/50000010')
+						.set('authorization', globals.deleteToken)
+						.expect(401, done);
+				})
+				.catch(error => done(error));
+		});
+
+		it('doesn\'t supply token', () => {
+			return request(app)
+				.delete('/api/users/50000020')
+				.expect(401);
+		});
+
+		it('supplies invalid token', () => {
+			return request(app)
+				.delete('/api/users/50000020')
+				.set('authorization', 'invalidToken')
+				.expect(401);
+		});
+
+		it('supplies expired token', () => {
+			return request(app)
+				.delete('/api/users/50000020')
+				.set('authorization', globals.expiredToken)
+				.expect(401);
+		});
 	});
 });
