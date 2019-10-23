@@ -265,7 +265,7 @@ unitarias relacionadas.
 
 Es un cliente que te deja documentar y probar APIs REST (como postman). En caso de 
 usarlo se puede importar la API entera del proyecto lista para probar con el archivo 
-que se encuentra en [src/resources/tpFullStackAPI-v0.1.0.json](https://github.com/santibozzo/TPFullstack/blob/master/backend/src/resources/tpFullStackAPI-v0.1.0.json).
+que se encuentra en [src/resources/tpFullStackAPI-v0.4.0.json](https://github.com/santibozzo/TPFullstack/blob/master/backend/src/resources/tpFullStackAPI-v0.4.0.json).
 
 - [extensión chrome](https://chrome.google.com/webstore/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm)
 
