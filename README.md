@@ -368,6 +368,19 @@ esos dni/cuit. Si algún dni/cuit no se encuentra en la base se lo saltea.
 ]
 ```
 
+### DELETE:users/{dni}
+
+Elimina el usuario dado. Sólo permite eliminar el usuario de la sesión.
+- **Autenticado:** SI
+- **PathParams:**
+    - dni
+- **QueryParams:**
+- **Request body:**
+- **Response body:**
+```
+User {dni} deleted
+```
+
 ### GET:request-limits/{dni}
 
 Devuelve la información relacionada al limite de requests por hora que tiene el 
