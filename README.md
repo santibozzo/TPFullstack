@@ -87,8 +87,12 @@ $ node server.js
 
 ## Tests Unitarios
 
-Los tests unitarios estan hechos con mocha y supertest. Al correrlos se crea una 
-nueva base que se popula con datos y una vez finalizados se elimina. 
+Los tests unitarios estan hechos con mocha y supertest. Los tests son de caja negra, 
+donde se le pasan distintos valores de entrada a cada endpoint y se valida la respuesta. 
+Se intenta de simular todos los casos posibles/bordes para tener la mayor cobertura de 
+codigo.  
+Al correr los tests se crea una nueva base que se popula con datos y una vez finalizados 
+se elimina.  
 Para correr los tests usar:
 ```
 $ npm test
