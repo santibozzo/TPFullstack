@@ -346,8 +346,10 @@ Devuelve la información de un usuario.
 
 ### POST:users/get
 
-Recibe una lista de dni/cuit y devuelve una lista de los usuarios relacionados a 
-esos dni/cuit. Si algún dni/cuit no se encuentra en la base se lo saltea.
+Recibe una lista de dni y devuelve una lista de los usuarios relacionados a 
+esos dni. Si algún dni no se encuentra en la base se lo saltea. También permite pasarle 
+cuits en lugar de dnis, en ese caso se busca el usuario con dni igual a la parte de dni 
+del cuit (en la respuesta se devuelve como dni).
 - **Autenticado:** SI
 - **PathParams:**
 - **QueryParams:**
