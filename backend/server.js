@@ -6,12 +6,14 @@ const dataBase = config.dataBase;
 const loginRouter = require('./src/routers/loginRouter');
 const usersRouter = require('./src/routers/usersRouter');
 const requestLimitsRouter = require('./src/routers/requestLimitsRouter');
+const cors = require('cors');
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const dataBaseInitializer = require('./src/dataAccess/dataBaseInitializer');
 
 app.use(express.json());
+app.use(cors());
 app.use(`${BASE_PATH}/login`, loginRouter);
 app.use(`${BASE_PATH}/users`, usersRouter);
 app.use(`${BASE_PATH}/request-limits`, requestLimitsRouter);
