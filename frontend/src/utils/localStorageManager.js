@@ -5,5 +5,5 @@ exports.setToken = token => {
 };
 
 exports.getToken = () => {
-	window.localStorage.getItem('token');
+	return window.localStorage.getItem('token');
 };
