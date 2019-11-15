@@ -19,6 +19,10 @@
 	outline: none;
 }
 
+.input-error {
+	border: 2px solid red;
+}
+
 .login-form-button {
 	display: block;
 	outline: none;
